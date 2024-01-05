@@ -1,8 +1,8 @@
 const express = require('express');
-const { buildSchema } = require('graphql');
 const cors = require('cors');
 require('dotenv').config();
 require('./database/db');
+const path = require('path');
 
 
 const app = express();
@@ -16,9 +16,10 @@ app.use(express.json());
 
 // Define your routes
 const userRouter = require('./routers/user');
-
+const productRouter = require('./routers/file');
 // Use the routers
 app.use('/api/', userRouter);
+app.use('/api/products/', productRouter);
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}/`);
