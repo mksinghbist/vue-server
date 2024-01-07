@@ -51,6 +51,8 @@ router.post('/signup', async (req, res) => {
       res.status(500).json({status : false , msg : error});
     };
 });
-
-
+router.get('/users', async (req, res) => { 
+  const user = await users.find({});
+  res.status(200).json({users : user});
+});
 module.exports = router;
