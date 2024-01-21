@@ -3,8 +3,9 @@
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
 const users = require('../database/schema/users');
+const jwtToken = require('../midleware/authentication');
+const productsInfo = require('../database/schema/products');
 
 router.post('/login', async (req, res) => {
   try {
@@ -19,9 +20,13 @@ router.post('/login', async (req, res) => {
       dataResponse.status = false;
       dataResponse.msg = 'Invalid username or password'
     } else {
-      const token = jwt.sign({ userId: user.id }, 'your_secret_key', {
-        expiresIn: '1h',
-      });
+      const userInfo = {
+        userId : user._id,
+        userName:user.name,
+        userEmail: user.userEmail,
+        userAdmin: user.admin,
+      }      
+      const token = jwtToken.generateToken(userInfo);
       dataResponse.status = true;
       dataResponse.msg = 'Login Successfull';
       dataResponse.token = token;
@@ -55,4 +60,22 @@ router.get('/users', async (req, res) => {
   const user = await users.find({});
   res.status(200).json({users : user});
 });
+router.get('/user/product/list',jwtToken.verifyToken, async (req,res) => {
+  try {
+    const productList = await productsInfo.find({});
+    const productListResponse = productList.map(product => {
+      return {
+          productId: product._id,
+          productTitle: product.productTitle,
+          productPrice: product.productPrice,
+          productQty: product.productQty,
+          productImgUrl: product.productImgUrl,
+          productDesc: product.productDescription,
+        };
+    });
+    res.status(200).json({status : true, productList: productListResponse});
+  } catch (error) {
+    res.status(500).json({status : false, message:  error });
+  }
+})
 module.exports = router;

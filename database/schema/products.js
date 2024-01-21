@@ -5,13 +5,13 @@ const userSchema = new mongoose.Schema({
         ref: 'users',
         required: true,
     },
-    productName: {
+    productTitle: {
         type : String,
         required: true,
     },
-    productImgUrl: {
+    productPrice: {
         type : String,
-        required: true,
+        default: 0,
     },
     productQty: {
         type : Number,
@@ -36,7 +36,11 @@ const userSchema = new mongoose.Schema({
     productStatus: {
         type : Boolean,
         default : false,
-    }
+    },
+    productImgUrl: {
+        type : String,
+        required: true,
+    },
 });
 const productsInfo = mongoose.model('products',userSchema);
 

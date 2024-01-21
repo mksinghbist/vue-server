@@ -2,7 +2,6 @@ const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
 require('./database/db');
-const path = require('path');
 
 
 const app = express();
@@ -16,10 +15,15 @@ app.use(express.json());
 
 // Define your routes
 const userRouter = require('./routers/user');
-const productRouter = require('./routers/file');
+const productRouter = require('./routers/product');
+
 // Use the routers
-app.use('/api/', userRouter);
-app.use('/api/products/', productRouter);
+try {
+  app.use('/api/', userRouter);
+  app.use('/api/products/', productRouter);
+} catch(error) {
+    console.log(error)
+}
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}/`);
