@@ -4,7 +4,7 @@ const productsInfo = require('../../database/schema/products');
 const validateProductDto = (data) => {
     try {
     console.log(data);
-    const { userId, productTitle, productImgUrl,productPrice, productQty, productMaxQty, productMinQty, productSoldQty, productDescription, productStatus } = data;
+    const { userId, productTitle, productImgUrl,productPrice, productQty, productMaxQty, productMinQty, productSoldQty, productDescription, productStatus,productType } = data;
     if (!userId ||
         typeof userId !== 'string' ||
         !productTitle ||
@@ -18,6 +18,7 @@ const validateProductDto = (data) => {
         userId: new mongoose.Types.ObjectId(userId.trim()),
         productTitle: productTitle.trim(),
         productImgUrl: productImgUrl.trim(),
+        productType: productType,
         productPrice:  typeof productPrice === 'string' ? productPrice : '0',
         productQty: typeof productQty === 'number' ? productQty : 0,
         productMaxQty: typeof productMaxQty === 'number' ? productMaxQty : 0,

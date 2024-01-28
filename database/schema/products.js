@@ -9,6 +9,10 @@ const userSchema = new mongoose.Schema({
         type : String,
         required: true,
     },
+    productType: {
+        type: String,
+        required: true,
+    },
     productPrice: {
         type : String,
         default: 0,
