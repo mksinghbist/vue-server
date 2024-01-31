@@ -3,7 +3,6 @@ const mongoose = require('mongoose');
 const productsInfo = require('../../database/schema/products');
 const validateProductDto = (data) => {
     try {
-    console.log(data);
     const { userId, productTitle, productImgUrl,productPrice, productQty, productMaxQty, productMinQty, productSoldQty, productDescription, productStatus,productType } = data;
     if (!userId ||
         typeof userId !== 'string' ||
