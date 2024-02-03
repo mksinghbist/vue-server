@@ -8,7 +8,12 @@ const app = express();
 const PORT = 3000;
 
 // Enable CORS for all routes
-app.use(cors());
+const corsOptions = {
+  origin: 'https://localbazar.netlify.app',
+  credentials: true, 
+};
+
+app.use(cors(corsOptions));
 
 // Middleware for parsing JSON requests
 app.use(express.json());

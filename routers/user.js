@@ -60,7 +60,7 @@ router.get('/users', async (req, res) => {
   const user = await users.find({});
   res.status(200).json({users : user});
 });
-router.get('/user/product/list',jwtToken.verifyToken, async (req,res) => {
+router.get('/user/product/list', async (req,res) => {
   try {
     const productList = await productsInfo.find({});
     const productListResponse = productList.map(product => {
