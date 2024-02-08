@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
-const WebSocket = require('ws');
+const http = require('http');
+const socketIo = require('socket.io');
 require('dotenv').config();
 require('./database/db');
 
@@ -9,7 +10,7 @@ const PORT = process.env.PORT || 3000; // Use environment variable for port or d
 
 // Enable CORS for all routes
 const corsOptions = {
-  origin: 'https://localbazar.netlify.app',
+  origin: ['https://localbazar.netlify.app'],
   credentials: true,
 };
 
@@ -26,39 +27,34 @@ const productRouter = require('./routers/product');
 app.use('/api/', userRouter);
 app.use('/api/products/', productRouter);
 
-// Create a WebSocket server
-const wss = new WebSocket.Server({ noServer: true });
-
-// WebSocket connection handling
-wss.on('connection', function connection(ws) {
-  console.log('WebSocket client connected');
-
-  // Event handler for incoming WebSocket messages
-  ws.on('message', function incoming(message) {
-    console.log('Received message:', message);
-
-    // Handle the incoming message (e.g., broadcast to other clients)
-    // Implement your custom logic here
-    wss.clients.forEach(client => {
-      if (client !== ws && client.readyState === WebSocket.OPEN) {
-        client.send(message);
-      }
-    });
-  });
-
-  // Event handler for WebSocket connection close
-  ws.on('close', function close() {
-    console.log('WebSocket client disconnected');
-  });
-});
+// Create HTTP server
+const server = http.createServer(app);
 
 // Attach WebSocket server to existing HTTP server
-const server = app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}/`);
+const io = socketIo(server, {
+  cors: {
+    origin: ['https://localbazar.netlify.app'],
+    methods: ["GET", "POST"],
+    allowedHeaders: ["my-custom-header"],
+    credentials: true
+  }
 });
 
-server.on('upgrade', (request, socket, head) => {
-  wss.handleUpgrade(request, socket, head, ws => {
-    wss.emit('connection', ws, request);
-  });
+
+// Handle socket connections
+io.on('connection', (socket) => {
+    console.log('A user connected');
+
+    // Handle incoming events from the client
+    socket.on('order', (data) => {
+        console.log('Order received:', data);
+
+        // Broadcast the order data to all connected clients (admin panel)
+        io.emit('newOrder', data);
+    });
+});
+
+// Start the server
+server.listen(PORT, () => {
+    console.log(`Server is running on http://localhost:${PORT}/`);
 });
