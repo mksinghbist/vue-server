@@ -10,7 +10,7 @@ const PORT = process.env.PORT || 3000; // Use environment variable for port or d
 
 // Enable CORS for all routes
 const corsOptions = {
-  origin: ['https://localbazar.netlify.app'],
+  origin: 'https://localbazar.netlify.app',
   credentials: true,
 };
 
@@ -33,7 +33,7 @@ const server = http.createServer(app);
 // Attach WebSocket server to existing HTTP server
 const io = socketIo(server, {
   cors: {
-    origin: ['https://localbazar.netlify.app'],
+    origin: 'https://localbazar.netlify.app',
     methods: ["GET", "POST"],
     allowedHeaders: ["my-custom-header"],
     credentials: true
