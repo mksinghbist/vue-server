@@ -31,6 +31,7 @@ router.post('/login', async (req, res) => {
       dataResponse.msg = 'Login Successfull';
       dataResponse.token = token;
       dataResponse.admin = user.admin ? user.admin : false;
+      dataResponse.carts = user.carts ? user.carts : [];
     }
     res.status(200).json(dataResponse);
   } catch(error) {

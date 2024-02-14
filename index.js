@@ -9,7 +9,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 const corsOptions = {
-  origin: ['http://localhost:8080', 'http://192.168.1.69:8080'],
+  origin: 'https://localbazar.netlify.app',
   credentials: true,
 };
 
@@ -27,7 +27,7 @@ const server = http.createServer(app);
 // Attach WebSocket server to existing HTTP server
 const io = socketIo(server, {
   cors: {
-    origin: 'https://localbazar.netlify.app',
+    origin: 'http://localhost:8080/',
     methods: ["GET", "POST"],
     allowedHeaders: ["my-custom-header"],
     credentials: true
