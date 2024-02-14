@@ -87,7 +87,7 @@ router.post('/user/cartsupdate',jwtToken.verifyToken, async(req,res) => {
 })
 router.get('/user/getcarts',jwtToken.verifyToken, async (req, res) => { 
   var userId = req.user.userId;
-  const user = await users.getUserList(userId);
-  res.status(200).json({users : user});
+  const cartsResponse = await users.getUserCartById(userId);
+  res.status(200).json({carts : cartsResponse});
 });
 module.exports = router;
