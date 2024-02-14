@@ -6,28 +6,22 @@ require('dotenv').config();
 require('./database/db');
 
 const app = express();
-const PORT = process.env.PORT || 3000; // Use environment variable for port or default to 3000
+const PORT = process.env.PORT || 3000;
 
-// Enable CORS for all routes
 const corsOptions = {
-  origin: 'https://localbazar.netlify.app',
+  origin: ['http://localhost:8080', 'http://192.168.1.69:8080'],
   credentials: true,
 };
 
 app.use(cors(corsOptions));
-
-// Middleware for parsing JSON requests
 app.use(express.json());
 
-// Define your routes
 const userRouter = require('./routers/user');
 const productRouter = require('./routers/product');
 
-// Use the routers
 app.use('/api/', userRouter);
 app.use('/api/products/', productRouter);
 
-// Create HTTP server
 const server = http.createServer(app);
 
 // Attach WebSocket server to existing HTTP server
