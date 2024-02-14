@@ -17,6 +17,10 @@ const userSchema = new mongoose.Schema({
         type : String,
         default: 0,
     },
+    productDiscount : {
+        type : Number,
+        default : 0,
+    },
     productQty: {
         type : Number,
         default : 0,

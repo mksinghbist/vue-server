@@ -3,14 +3,14 @@
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
-const users = require('../database/schema/users');
+const users = require('../models//user');
 const jwtToken = require('../midleware/authentication');
 const productsInfo = require('../database/schema/products');
 
 router.post('/login', async (req, res) => {
   try {
     const { userEmail, password } = req.body;
-    const user = await users.findOne({ userEmail });
+    const user = await users.getUser({ userEmail });
     var dataResponse = {
       status : false,
       msg: '',
@@ -40,12 +40,12 @@ router.post('/login', async (req, res) => {
 router.post('/signup', async (req, res) => {
     try {
       const { userName, userEmail, userPassword} = req.body;
-      const user = await users.findOne({ userEmail });
+      const user = await users.getUser({ userEmail });
       const dataResponse = {}
       if(!user) {
         const hashedPassword = await bcrypt.hash(userPassword, 10);
-        const newUser = new users({ name : userName,userEmail,password: hashedPassword, admin: false });
-        const response = await newUser.save();
+        const newUserData = { name : userName,userEmail,password: hashedPassword, admin: false }
+        const response = await users.createUser(newUserData);
         dataResponse.status = true;
         dataResponse.user = response;
         res.status(200).json(dataResponse);
@@ -57,7 +57,7 @@ router.post('/signup', async (req, res) => {
     };
 });
 router.get('/users', async (req, res) => { 
-  const user = await users.find({});
+  const user = await users.getUserList();
   res.status(200).json({users : user});
 });
 router.get('/user/product/list', async (req,res) => {
@@ -78,4 +78,15 @@ router.get('/user/product/list', async (req,res) => {
     res.status(500).json({status : false, message:  error });
   }
 })
+router.post('/user/cartsupdate',jwtToken.verifyToken, async(req,res) => {
+  const { userCart } = req.body;
+  const  userId = req.user.userId;
+  const updatedCartResponse = users.updateCart(userId,userCart); 
+  res.status(200).json({updateCart : updatedCartResponse});
+})
+router.get('/user/getcarts',jwtToken.verifyToken, async (req, res) => { 
+  var userId = req.user.userId;
+  const user = await users.getUserList(userId);
+  res.status(200).json({users : user});
+});
 module.exports = router;
